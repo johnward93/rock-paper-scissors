@@ -1,11 +1,11 @@
 function getComputerChoice() {
-    let computerChoiceNum = (Math.floor(Math.random()*1000)) % 3;
+    let computerChoiceNum = (Math.floor(Math.random() * 1000)) % 3;
     let computerChoiceWord = ""
 
-    if(computerChoiceNum === 0){
+    if (computerChoiceNum === 0) {
         computerChoiceWord = "rock"
     }
-    else if(computerChoiceNum === 1){
+    else if (computerChoiceNum === 1) {
         computerChoiceWord = "paper"
     }
     else {
@@ -18,51 +18,44 @@ function getComputerChoice() {
 
 function playRound(playerSelection, computerSelection) {
     playerSelection = playerSelection.toLowerCase()
-    let result = ``
-    if(!(playerSelection == "rock") && !(playerSelection == "paper") && !(playerSelection == "scissors")){
-        console.log(`${playerSelection} is not a valid option`)
+
+    if (playerScore < 5 && computerScore < 5) {
+        if (playerSelection == computerSelection) {
+            gameResult.textContent = `It's a tie! You both chose ${playerSelection}`;
+        }
+        else if ((playerSelection == "rock" && computerSelection == "scissors") || (playerSelection == "paper" && computerSelection == "rock") || (playerSelection == "scissors" && computerSelection == "paper")) {
+            playerScore++;
+            playerDiv.textContent = `Player: ${playerScore}`;
+            gameResult.textContent = `You won that one!`;
+        }
+        else {
+            computerScore++;
+            computerDiv.textContent = `Computer: ${computerScore}`;
+            gameResult.textContent = `You lost that one!`;
+        }
     }
-    else if(playerSelection == computerSelection){
-        result = `tie` 
-        return result
+    if (playerScore === 5) {
+        gameResult.textContent = `Player is the winner`;
+        return;
     }
-    else if((playerSelection == "rock" && computerSelection == "scissors") || (playerSelection == "paper" && computerSelection == "rock") || (playerSelection == "scissors" && computerSelection == "paper")){
-        result = `player`
-        return result
-    }
-    else {
-        result = `computer`
-        return result
+    else if (computerScore === 5){
+        gameResult.textContent = `Computer is the winner, cheating bastard`;
+        return;
     }
 }
 
-function game(){
-    let playerScore = 0
-    let computerScore = 0
+let playerScore = 0
+let computerScore = 0
 
-    while (playerScore < 5 && computerScore < 5){
-        const playerSelection = prompt("Enter your choice: Rock, Paper, or Scissors")
-        const computerSelection = getComputerChoice()
-        let winner = playRound(playerSelection, computerSelection)
-        if (winner === "tie"){
-            console.log(`It's a tie! You both chose ${playerSelection}`)
-            continue
-        }
-        else if (winner === "player"){
-            playerScore++
-            console.log(`You won that one! Player: ${playerScore} Computer: ${computerScore}`)
-        }
-        else if (winner === "computer"){
-            computerScore++
-            console.log(`You lost that one! Player: ${playerScore} Computer: ${computerScore}`)
-        }
-    }
-    if (playerScore === 5){
-        return `Player beat the computer`
-    }
-    else {
-        return `Computer must have cheated, it won`
-    }
-}
+const buttonsSelection = document.querySelectorAll("button");
+buttonsSelection.forEach((button) => {
+    button.addEventListener("click", () => {
+        playRound(button.id, getComputerChoice());
+    })
+});
 
-console.log(game())
+const gameResult = document.querySelector("#game-result");
+
+const playerDiv = document.querySelector("#player-score");
+const computerDiv = document.querySelector("#computer-score");
+const scoreboard = document.querySelector("#scoreboard")
